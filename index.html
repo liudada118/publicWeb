@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绑定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .font{
+            font-family: 'font';
+        }
+
+        @font-face {
+            font-family: "font";
+            src: url('./PingFang\ SC.ttf');
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 10% 5%;
+            /* z-index: 1; */
+            /* position: absolute;
+            top: 0;
+            width: 90%; */
+        }
+
+        .content_title {
+            margin-top: 60px;
+            font-size: 24px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .phone_div {
+            border-bottom: solid #ccc 1px;
+
+        }
+
+        .content_phone {
+            border: 0;
+            width: 100%;
+            /* border-bottom: 1px; */
+            font-size: 18px;
+            box-shadow: none;
+            background-color: rgba(124,221,225,0);
+        }
+
+        .content_sms {
+            margin-top: 20px;
+            border: 0;
+            width: 100%;
+            /* border-bottom: 1px; */
+            font-size: 18px;
+        }
+
+        .bindInfo {
+            /* margin: 0; */
+            margin-bottom: 30px;
+            color: #aaa
+        }
+
+        .content_phone:focus-visible {
+            outline: 0px !important;
+        }
+
+        .content_sms:focus-visible {
+            outline: 0px !important;
+        }
+
+        .bindButton {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            background-color: rgba(86, 212, 216, 0.5);
+            border-radius: 5px;
+        }
+
+        .bg {
+            width: 60vw;
+          
+        }
+        .home_content{
+            background-color: rgba(124,221,225,0.3);
+            height: 100vh;
+        }
+    </style>
+</head>
+<div class="home_content font">
+    
+    <div class="content">
+        <img class="bg" src="./bLogo.png" alt="">
+        <span class="content_title">欢迎登录bodyta</span>
+        <div class="phone_div">
+            <input class="content_phone" type="text" placeholder="请输入手机号">
+
+        </div>
+        <!-- <p class="bindInfo">未注册的手机号自动创建账号</p>  -->
+        <div class="bindButton">获取验证码</div>
+
+    </div>
+</div>
+
+<body>
+    <script>
+        let i = 1
+        const APPID = 'wxe9de716803d43a47'
+        let value, codes, phone
+        const input = document.querySelector('.content_phone')
+        input.addEventListener('input', (e) => {
+            value = e.target.value
+        })
+        const bindButton = document.querySelector('.bindButton')
+        bindButton.addEventListener('click', () => {
+            // fetch('https://sensor.bodyta.com/rcv/WxPublicNoBind?code='+ codes + '&phone=' + value)
+            fetch('https://sensor.bodyta.com/rcv/login/sendSmsCode?phone=' + value).then(res => res.json).then(data => {
+                console.log(data)
+                window.location.href = "./sms.html?phone=" + value + '&code=' + codes;
+            })
+
+
+        })
+        function getQueryVariable(variable) {
+            var query = (window.location.search).substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return (false);
+        }
+
+        function getCode() { // 非静默授权，第一次有弹框
+            const code = getQueryVariable('code') // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
+            const local = window.location.href
+            if (code) {
+                // document.getElementById('id').innerHTML = code
+                // getOpenId(code)
+                codes = code
+            }
+
+        }
+
+        getCode()
+    </script>
+</body>
+
+</html>

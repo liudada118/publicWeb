@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绑定</title>
+    <style>
+        .content {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 10% 5%;
+        }
+
+        .content_title {
+            font-size: 28px;
+            margin-bottom: 40px;
+        }
+
+        .phone_div{
+            border-bottom: solid #eee 1px;
+           
+        }
+
+        .content_phone {
+            border: 0;
+            width: 100%;
+            /* border-bottom: 1px; */
+            font-size: 18px;
+            
+        }
+
+        .content_sms{
+            margin-top: 20px;
+            border: 0;
+            width: 100%;
+            /* border-bottom: 1px; */
+            font-size: 18px;
+        }
+
+        .bindInfo{
+            /* margin: 0; */
+            margin-bottom: 30px;
+            color : #aaa
+        }
+        .content_phone:focus-visible{
+            outline: 0px !important;
+        }
+        .content_sms:focus-visible{
+            outline: 0px !important;
+        }
+        .bindButton{
+            padding: 10px;
+            text-align: center;
+            background-color: rgba(86,212,216,0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<div class="content">
+    <span class="content_title">绑定手机号</span>
+    <div class="phone_div">
+        <input class="content_phone" type="text" placeholder="请输入手机号">
+        
+    </div>
+    <div class="phone_div">
+        <input class="content_sms" type="text" placeholder="请输入验证码">
+    </div>
+    <p class="bindInfo">未注册的手机号自动创建账号</p> 
+    <div class="bindButton">开始绑定</div>
+
+</div>
+
+<body>
+    <script>
+        let i = 1
+        const APPID = 'wxe9de716803d43a47'
+        let value,codes
+        const input = document.querySelector('.content_phone')
+        input.addEventListener('input' , (e) => {
+            value = e.target.value
+        })
+        const bindButton = document.querySelector('.bindButton')
+        bindButton.addEventListener('click', () => {
+            fetch('https://sensor.bodyta.com/rcv/WxPublicNoBind?code='+ codes + '&phone=' + value)
+        })
+        function getQueryVariable(variable) {
+            var query = (window.location.search).substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return (false);
+        }
+
+        function getCode() { // 非静默授权，第一次有弹框
+            const code = getQueryVariable('code') // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
+            const local = window.location.href
+            if (code) {
+                // document.getElementById('id').innerHTML = code
+                // getOpenId(code)
+                codes = code
+            }
+
+        }
+
+        getCode()
+    </script>
+</body>
+
+</html>
